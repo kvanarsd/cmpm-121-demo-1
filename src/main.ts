@@ -10,20 +10,20 @@ header.innerHTML = gameName;
 app.append(header);
 
 // button
-const button = document.createElement('button');
+const button = document.createElement("button");
 button.textContent = "🧚🏻";
 
 // counter
 let counter = 0;
 
-button.addEventListener('click', () => {
-    counter++;
-    dispCounter.textContent = counter + " Fairy Dust";
+button.addEventListener("click", () => {
+  counter++;
+  dispCounter.textContent = counter + " Fairy Dust";
 });
 
 app.appendChild(button);
 
 // div
-const dispCounter = document.createElement('div');
+const dispCounter = document.createElement("div");
 dispCounter.textContent = counter + " Fairy Dust";
 app.appendChild(dispCounter);
