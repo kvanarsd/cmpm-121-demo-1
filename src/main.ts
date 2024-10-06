@@ -26,7 +26,7 @@ dispCounter.textContent = counter + " Fairy Dust";
 app.appendChild(dispCounter);
 
 // 1 second interval
-let secInterval = setInterval(addCounter, 1000, 1)
+setInterval(addCounter, 1000, 1);
 
 // functions
 function addCounter(x: number) {
