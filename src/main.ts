@@ -16,10 +16,7 @@ button.textContent = "🧚🏻";
 // counter
 let counter = 0;
 
-button.addEventListener("click", () => {
-  counter++;
-  dispCounter.textContent = counter + " Fairy Dust";
-});
+button.addEventListener("click", () => addCounter(1));
 
 app.appendChild(button);
 
@@ -27,3 +24,12 @@ app.appendChild(button);
 const dispCounter = document.createElement("div");
 dispCounter.textContent = counter + " Fairy Dust";
 app.appendChild(dispCounter);
+
+// 1 second interval
+let secInterval = setInterval(addCounter, 1000, 1)
+
+// functions
+function addCounter(x: number) {
+  counter += x;
+  dispCounter.textContent = counter + " Fairy Dust";
+}
