@@ -37,11 +37,11 @@ let isIntervalRunning = false;
 const autoClicker = document.createElement("button");
 autoClicker.innerHTML = "Mushroom Offering (0.1/s) <br>--10 FAIRY DUST--";
 
-upgradeButtons.push({ button: autoClicker, cost: 10 , level: 0, auto: 0.1});
+upgradeButtons.push({ button: autoClicker, cost: 10, level: 0, auto: 0.1 });
 // click
 
 const upgrade = findUpgrade(autoClicker);
-if(upgrade) {
+if (upgrade) {
   autoClicker.addEventListener("click", () => purchaseUpgrade(upgrade));
 } else {
   console.error("Upgrade not found for the specified button.");
@@ -135,13 +135,13 @@ function purchaseUpgrade(upgrade: Upgrades) {
   upgrade.level++;
   autoAdd += upgrade.auto;
 
-  // if auto collect hasn't started 
+  // if auto collect hasn't started
   if (!isIntervalRunning) {
     isIntervalRunning = true;
     requestAnimationFrame(intervalCounter);
   }
 
-  upgrade.cost *= (upgrade.level + 1);
+  upgrade.cost *= upgrade.level + 1;
   upgrade.button.innerHTML = `Mushroom Offering (${upgrade.auto}/s) <br>--${upgrade.cost} FAIRY DUST--`;
 
   // check if it can be upgraded again
