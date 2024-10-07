@@ -16,6 +16,8 @@ app.append(header);
 interface Upgrades {
   button: HTMLButtonElement;
   cost: number;
+  level: number;
+  auto: number;
 }
 
 const upgradeButtons: Upgrades[] = [];
@@ -29,39 +31,21 @@ clicker.addEventListener("click", () => addCounter(1));
 app.appendChild(clicker);
 
 // Auto increase 1 per second upgrade button
-const autoClicker = document.createElement("button");
-let autoClickerCost = 10;
 let autoAdd = 0;
-let autoLevel = 0;
-autoClicker.innerHTML = "Auto Collect (1/s) <br>--10 FAIRY DUST--";
 let isIntervalRunning = false;
 
+const autoClicker = document.createElement("button");
+autoClicker.innerHTML = "Mushroom Offering (0.1/s) <br>--10 FAIRY DUST--";
+
+upgradeButtons.push({ button: autoClicker, cost: 10 , level: 0, auto: 0.1});
 // click
-autoClicker.addEventListener("click", () => {
-  if (counter < autoClickerCost) {
-    return;
-  }
-  addCounter(-autoClickerCost);
-  autoLevel++;
-  autoAdd = 1 * autoLevel;
 
-  if (!isIntervalRunning) {
-    isIntervalRunning = true;
-    requestAnimationFrame(intervalCounter);
-  }
-
-  autoClickerCost = 10 * (autoLevel + 1);
-  autoClicker.innerHTML = `Auto Collect (${autoAdd + 1}/s) <br>--${autoClickerCost} FAIRY DUST--`;
-
-  // update cost
-  const upgrade = findUpgrade(autoClicker);
-  if (upgrade) {
-    upgrade.cost = autoClickerCost;
-  }
-
-  // check if it can be upgraded again
-  if (counter < autoClickerCost) disableButton(autoClicker);
-});
+const upgrade = findUpgrade(autoClicker);
+if(upgrade) {
+  autoClicker.addEventListener("click", () => purchaseUpgrade(upgrade));
+} else {
+  console.error("Upgrade not found for the specified button.");
+}
 
 app.appendChild(autoClicker);
 // style
@@ -69,8 +53,6 @@ autoClicker.style.position = "absolute";
 position();
 // disable button
 disableButton(autoClicker);
-
-upgradeButtons.push({ button: autoClicker, cost: autoClickerCost });
 
 // div
 const dispCounter = document.createElement("div");
@@ -143,4 +125,25 @@ function disableButton(button: HTMLButtonElement) {
 
 function findUpgrade(button: HTMLButtonElement) {
   return upgradeButtons.find((upgrade) => upgrade.button === button);
+}
+
+function purchaseUpgrade(upgrade: Upgrades) {
+  if (counter < upgrade.cost) {
+    return;
+  }
+  addCounter(-upgrade.cost);
+  upgrade.level++;
+  autoAdd += upgrade.auto;
+
+  // if auto collect hasn't started 
+  if (!isIntervalRunning) {
+    isIntervalRunning = true;
+    requestAnimationFrame(intervalCounter);
+  }
+
+  upgrade.cost *= (upgrade.level + 1);
+  upgrade.button.innerHTML = `Mushroom Offering (${upgrade.auto}/s) <br>--${upgrade.cost} FAIRY DUST--`;
+
+  // check if it can be upgraded again
+  if (counter < upgrade.cost) disableButton(upgrade.button);
 }
