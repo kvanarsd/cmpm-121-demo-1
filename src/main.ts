@@ -2,7 +2,7 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 let width = document.documentElement.clientWidth;
-let height = document.documentElement.clientHeight;
+//let height = document.documentElement.clientHeight;
 
 const gameName = "My Fairy game";
 document.title = gameName;
@@ -18,7 +18,7 @@ interface Upgrades {
   cost: number;
 }
 
-let upgradeButtons: Upgrades[] = [];
+const upgradeButtons: Upgrades[] = [];
 
 // Fairy Dust Clicker
 const clicker = document.createElement("button");
@@ -38,19 +38,19 @@ let isIntervalRunning = false;
 
 // click
 autoClicker.addEventListener("click", () => {
-  if(counter < autoClickerCost) {
+  if (counter < autoClickerCost) {
     return;
   }
   addCounter(-autoClickerCost);
   autoLevel++;
   autoAdd = 1 * autoLevel;
 
-  if(!isIntervalRunning) {
+  if (!isIntervalRunning) {
     isIntervalRunning = true;
     requestAnimationFrame(intervalCounter);
   }
-  
-  autoClickerCost = 10 * (autoLevel +  1);
+
+  autoClickerCost = 10 * (autoLevel + 1);
   autoClicker.innerHTML = `Auto Collect (${autoAdd + 1}/s) <br>--${autoClickerCost} FAIRY DUST--`;
 
   // update cost
@@ -60,8 +60,8 @@ autoClicker.addEventListener("click", () => {
   }
 
   // check if it can be upgraded again
-  if(counter < autoClickerCost) disableButton(autoClicker);
-})
+  if (counter < autoClickerCost) disableButton(autoClicker);
+});
 
 app.appendChild(autoClicker);
 // style
@@ -70,8 +70,7 @@ position();
 // disable button
 disableButton(autoClicker);
 
-upgradeButtons.push({ button: autoClicker, cost: autoClickerCost })
-
+upgradeButtons.push({ button: autoClicker, cost: autoClickerCost });
 
 // div
 const dispCounter = document.createElement("div");
@@ -89,8 +88,8 @@ function addCounter(x: number) {
   dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
 
   // if there is enough dust for upgrade enable the button
-  for(const upgrade of upgradeButtons) {
-    if(counter >= upgrade.cost) {
+  for (const upgrade of upgradeButtons) {
+    if (counter >= upgrade.cost) {
       enableButton(upgrade.button);
     }
   }
@@ -101,7 +100,7 @@ let lastFrame = 0;
 let elaspedTime = 0;
 
 function intervalCounter(timestamp: DOMHighResTimeStamp) {
-  if(lastFrame == 0) lastFrame = timestamp;
+  if (lastFrame == 0) lastFrame = timestamp;
 
   elaspedTime = timestamp - lastFrame;
   lastFrame = timestamp;
@@ -113,35 +112,35 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
   requestAnimationFrame(intervalCounter);
 }
 
-setInterval(()=> {
-  console.log("second")
-},1000);
+setInterval(() => {
+  console.log("second");
+}, 1000);
 
 function position() {
   const rect = clicker.getBoundingClientRect();
-  autoClicker.style.left = `${width/2 - autoClicker.offsetWidth/2}px`;
+  autoClicker.style.left = `${width / 2 - autoClicker.offsetWidth / 2}px`;
   autoClicker.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
 }
 
 // if window is resized change everything positions
-window.addEventListener('resize', () => {
+window.addEventListener("resize", () => {
   width = document.documentElement.clientWidth;
-  height = document.documentElement.clientHeight;
+  //height = document.documentElement.clientHeight;
   position();
 });
 
-function enableButton(button: HTMLButtonElement){
+function enableButton(button: HTMLButtonElement) {
   button.style.backgroundColor = "#f9f9f9";
   button.style.color = "#1a1a1a";
-  button.style.cursor = "pointer"; 
+  button.style.cursor = "pointer";
 }
 
 function disableButton(button: HTMLButtonElement) {
   button.style.backgroundColor = "#d3d3d3";
   button.style.color = "#a9a9a9";
-  button.style.cursor = "not-allowed"; 
+  button.style.cursor = "not-allowed";
 }
 
 function findUpgrade(button: HTMLButtonElement) {
-  return upgradeButtons.find(upgrade => upgrade.button === button);
+  return upgradeButtons.find((upgrade) => upgrade.button === button);
 }
