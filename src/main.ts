@@ -155,8 +155,8 @@ function purchaseUpgrade(upgrade: Upgrades) {
     requestAnimationFrame(intervalCounter);
   }
 
-  upgrade.cost *= upgrade.level + 1;
-  upgrade.button.innerHTML = `Mushroom Offering (${upgrade.auto}/s) <br>--${upgrade.cost} FAIRY DUST--`;
+  upgrade.cost += upgrade.cost * 1.15;
+  upgrade.button.innerHTML = `Mushroom Offering (${upgrade.auto.toFixed(2)}/s) <br>--${upgrade.cost.toFixed(2)} FAIRY DUST--`;
 
   // check if it can be upgraded again
   if (counter < upgrade.cost) disableButton(upgrade.button);
