@@ -2,7 +2,6 @@ import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
 let width = document.documentElement.clientWidth;
-//let height = document.documentElement.clientHeight;
 
 const gameName = "My Fairy game";
 document.title = gameName;
@@ -11,7 +10,7 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// display auto interval
+// display collect interval
 let autoAdd = 0;
 let isIntervalRunning = false;
 
@@ -20,13 +19,13 @@ curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
 curAuto.style.fontWeight = "bold";
 app.append(curAuto);
 
-// Buttons ---------------------------------------
+// Buttons -----------------------------------------------------------------------------------------
 // upgrade buttons
 interface Upgrades {
   button: HTMLButtonElement;
-  cost: number;
+  dust: number;
   level: number;
-  auto: number;
+  collect: number;
   name: string;
 }
 
@@ -62,7 +61,7 @@ const dispCounter = document.createElement("div");
 dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
 app.appendChild(dispCounter);
 
-// functions ---------------------------------------
+// functions -----------------------------------------------------------------------------------------
 
 // upgrade levels
 function displayLevels() {
@@ -79,7 +78,7 @@ function addCounter(x: number) {
 
   // if there is enough dust for upgrade enable the button
   for (const upgrade of upgradeButtons) {
-    if (counter >= upgrade.cost) {
+    if (counter >= upgrade.dust) {
       enableButton(upgrade.button);
     }
   }
@@ -102,6 +101,7 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
   requestAnimationFrame(intervalCounter);
 }
 
+// position elements
 function position() {
   mushroomUp.style.left = `${width / 2 - featherUp.offsetWidth / 2 - mushroomUp.offsetWidth}px`;
   featherUp.style.left = `${width / 2 - featherUp.offsetWidth / 2}px`;
@@ -124,29 +124,33 @@ window.addEventListener("resize", () => {
   position();
 });
 
+// change button colors
 function enableButton(button: HTMLButtonElement) {
   button.style.backgroundColor = "#f9f9f9";
   button.style.color = "#1a1a1a";
   button.style.cursor = "pointer";
 }
 
+// change button colors
 function disableButton(button: HTMLButtonElement) {
   button.style.backgroundColor = "#d3d3d3";
   button.style.color = "#a9a9a9";
   button.style.cursor = "not-allowed";
 }
 
+// access button from array
 function findUpgrade(button: HTMLButtonElement) {
   return upgradeButtons.find((upgrade) => upgrade.button === button);
 }
 
+// clicked upgrade
 function purchaseUpgrade(upgrade: Upgrades) {
-  if (counter < upgrade.cost) {
+  if (counter < upgrade.dust) {
     return;
   }
-  addCounter(-upgrade.cost);
+  addCounter(-upgrade.dust);
   upgrade.level++;
-  autoAdd += upgrade.auto;
+  autoAdd += upgrade.collect;
   curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
 
   // if auto collect hasn't started
@@ -155,27 +159,28 @@ function purchaseUpgrade(upgrade: Upgrades) {
     requestAnimationFrame(intervalCounter);
   }
 
-  upgrade.cost += upgrade.cost * 1.15;
-  upgrade.button.innerHTML = `${upgrade.name} (${upgrade.auto}/s) <br>--${upgrade.cost.toFixed(2)} FAIRY DUST--`;
+  upgrade.dust += upgrade.dust * 1.15;
+  upgrade.button.innerHTML = `${upgrade.name} (${upgrade.collect}/s) <br>--${upgrade.dust.toFixed(2)} FAIRY DUST--`;
 
   // check if it can be upgraded again
-  if (counter < upgrade.cost) disableButton(upgrade.button);
+  if (counter < upgrade.dust) disableButton(upgrade.button);
   displayLevels();
   position();
 }
 
+// make upgrade buttons
 function makeUpgrade(
   button: HTMLButtonElement,
-  cost: number,
-  auto: number,
+  dust: number,
+  collect: number,
   name: string,
 ) {
-  button.innerHTML = `${name} (${auto}/s) <br>--${cost} FAIRY DUST--`;
+  button.innerHTML = `${name} (${collect}/s) <br>--${dust} FAIRY DUST--`;
   upgradeButtons.push({
     button: button,
-    cost: cost,
+    dust: dust,
     level: 0,
-    auto: auto,
+    collect: collect,
     name: name,
   });
   const upgrade = findUpgrade(button);
