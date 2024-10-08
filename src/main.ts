@@ -1,7 +1,6 @@
 import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
-let width = document.documentElement.clientWidth;
 
 const gameName = "My Fairy game";
 document.title = gameName;
@@ -39,6 +38,11 @@ clicker.addEventListener("click", () => addCounter(1));
 
 app.appendChild(clicker);
 
+// Display counter
+const dispCounter = document.createElement("div");
+dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
+app.appendChild(dispCounter);
+
 // upgrades
 const mushroomUp = document.createElement("button");
 makeUpgrade(mushroomUp, 10, 0.2, "Mushroom Offering");
@@ -47,19 +51,18 @@ const featherUp = document.createElement("button");
 makeUpgrade(featherUp, 50, 2, "Feather Tickler");
 
 const pairUp = document.createElement("button");
-makeUpgrade(pairUp, 100, 5, "Pair of Wings");
+makeUpgrade(pairUp, 100, 5, "Extra Pair of Wings");
+
+const pollenUp = document.createElement("button");
+makeUpgrade(pollenUp, 200, 10, "Pollen to make the Fairies Sneeze");
+
+const friendUp = document.createElement("button");
+makeUpgrade(friendUp, 500, 20, "Call a Fairy Friend");
 
 // Display upgrade levels
 const dispLevel = document.createElement("div");
 displayLevels();
-dispLevel.style.position = "absolute";
 app.appendChild(dispLevel);
-position();
-
-// Display counter
-const dispCounter = document.createElement("div");
-dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
-app.appendChild(dispCounter);
 
 // functions -----------------------------------------------------------------------------------------
 
@@ -80,6 +83,8 @@ function addCounter(x: number) {
   for (const upgrade of upgradeButtons) {
     if (counter >= upgrade.dust) {
       enableButton(upgrade.button);
+    } else {
+      disableButton(upgrade.button);
     }
   }
 }
@@ -100,29 +105,6 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
   }
   requestAnimationFrame(intervalCounter);
 }
-
-// position elements
-function position() {
-  mushroomUp.style.left = `${width / 2 - featherUp.offsetWidth / 2 - mushroomUp.offsetWidth}px`;
-  featherUp.style.left = `${width / 2 - featherUp.offsetWidth / 2}px`;
-  pairUp.style.left = `${width / 2 + featherUp.offsetWidth / 2}px`;
-
-  let rect = clicker.getBoundingClientRect();
-  mushroomUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
-  featherUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
-  pairUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
-
-  rect = featherUp.getBoundingClientRect();
-  dispLevel.style.top = `${rect.top + featherUp.offsetHeight}px`;
-  dispLevel.style.left = `${width / 2 - dispLevel.offsetWidth / 2}px`;
-}
-
-// if window is resized change everything positions
-window.addEventListener("resize", () => {
-  width = document.documentElement.clientWidth;
-  //height = document.documentElement.clientHeight;
-  position();
-});
 
 // change button colors
 function enableButton(button: HTMLButtonElement) {
@@ -165,7 +147,6 @@ function purchaseUpgrade(upgrade: Upgrades) {
   // check if it can be upgraded again
   if (counter < upgrade.dust) disableButton(upgrade.button);
   displayLevels();
-  position();
 }
 
 // make upgrade buttons
@@ -190,6 +171,6 @@ function makeUpgrade(
     console.error("Upgrade not found for the specified button.");
   }
   app.appendChild(button);
-  button.style.position = "absolute";
+
   disableButton(button);
 }
