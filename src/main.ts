@@ -11,6 +11,15 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+// display auto interval
+let autoAdd = 0;
+let isIntervalRunning = false;
+
+const curAuto = document.createElement("div");
+curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
+curAuto.style.fontWeight = "bold";
+app.append(curAuto);
+
 // Buttons ---------------------------------------
 // upgrade buttons
 interface Upgrades {
@@ -18,6 +27,7 @@ interface Upgrades {
   cost: number;
   level: number;
   auto: number;
+  name: string;
 }
 
 const upgradeButtons: Upgrades[] = [];
@@ -30,40 +40,38 @@ clicker.addEventListener("click", () => addCounter(1));
 
 app.appendChild(clicker);
 
-// Auto increase 1 per second upgrade button
-let autoAdd = 0;
-let isIntervalRunning = false;
+// upgrades
+const mushroomUp = document.createElement("button");
+makeUpgrade(mushroomUp, 10, 0.2, "Mushroom Offering")
 
-const autoClicker = document.createElement("button");
-autoClicker.innerHTML = "Mushroom Offering (0.1/s) <br>--10 FAIRY DUST--";
+const featherUp = document.createElement("button");
+makeUpgrade(featherUp, 50, 2, "Feather Tickler")
 
-upgradeButtons.push({ button: autoClicker, cost: 10, level: 0, auto: 0.1 });
-// click
+const pairUp = document.createElement("button");
+makeUpgrade(pairUp, 100, 5, "Pair of Wings")
 
-const upgrade = findUpgrade(autoClicker);
-if (upgrade) {
-  autoClicker.addEventListener("click", () => purchaseUpgrade(upgrade));
-} else {
-  console.error("Upgrade not found for the specified button.");
-}
-
-app.appendChild(autoClicker);
-// style
-autoClicker.style.position = "absolute";
+// Display upgrade levels
+const dispLevel = document.createElement("div");
+displayLevels()
+dispLevel.style.position = "absolute";
+app.appendChild(dispLevel);
 position();
-// disable button
-disableButton(autoClicker);
 
-// div
+// Display counter
 const dispCounter = document.createElement("div");
 dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
 app.appendChild(dispCounter);
 
-// 1 second interval
-//requestAnimationFrame(intervalCounter);
-
 // functions ---------------------------------------
 
+// upgrade levels
+function displayLevels() {
+  dispLevel.textContent = "-";
+  for (const upgrade of upgradeButtons) { 
+    dispLevel.textContent += `- ${upgrade.level} ${upgrade.name} -`;
+  }
+  dispLevel.textContent += "-";
+}
 // add to counter and display update
 function addCounter(x: number) {
   counter += x;
@@ -94,14 +102,19 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
   requestAnimationFrame(intervalCounter);
 }
 
-setInterval(() => {
-  console.log("second");
-}, 1000);
-
 function position() {
-  const rect = clicker.getBoundingClientRect();
-  autoClicker.style.left = `${width / 2 - autoClicker.offsetWidth / 2}px`;
-  autoClicker.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
+  mushroomUp.style.left = `${width / 2 - featherUp.offsetWidth / 2 - mushroomUp.offsetWidth}px`;
+  featherUp.style.left = `${width / 2 - featherUp.offsetWidth / 2}px`;
+  pairUp.style.left = `${width / 2 + featherUp.offsetWidth / 2}px`;
+  
+  let rect = clicker.getBoundingClientRect();
+  mushroomUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
+  featherUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
+  pairUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
+
+  rect = featherUp.getBoundingClientRect();
+  dispLevel.style.top = `${rect.top + featherUp.offsetHeight}px`;
+  dispLevel.style.left = `${width / 2 - dispLevel.offsetWidth / 2}px`;
 }
 
 // if window is resized change everything positions
@@ -134,6 +147,7 @@ function purchaseUpgrade(upgrade: Upgrades) {
   addCounter(-upgrade.cost);
   upgrade.level++;
   autoAdd += upgrade.auto;
+  curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
 
   // if auto collect hasn't started
   if (!isIntervalRunning) {
@@ -146,4 +160,19 @@ function purchaseUpgrade(upgrade: Upgrades) {
 
   // check if it can be upgraded again
   if (counter < upgrade.cost) disableButton(upgrade.button);
+  displayLevels()
+}
+
+function makeUpgrade(button: HTMLButtonElement, cost: number, auto: number, name: string) {
+  button.innerHTML = `${name} (${auto}/s) <br>--${cost} FAIRY DUST--`;
+  upgradeButtons.push({ button: button, cost: cost, level: 0, auto: auto, name: name});
+  const upgrade = findUpgrade(button);
+  if (upgrade) {
+    button.addEventListener("click", () => purchaseUpgrade(upgrade));
+  } else {
+    console.error("Upgrade not found for the specified button.");
+  }
+  app.appendChild(button);
+  button.style.position = "absolute";
+  disableButton(button);
 }
