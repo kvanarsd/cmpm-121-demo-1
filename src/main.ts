@@ -156,11 +156,12 @@ function purchaseUpgrade(upgrade: Upgrades) {
   }
 
   upgrade.cost += upgrade.cost * 1.15;
-  upgrade.button.innerHTML = `Mushroom Offering (${upgrade.auto.toFixed(2)}/s) <br>--${upgrade.cost.toFixed(2)} FAIRY DUST--`;
+  upgrade.button.innerHTML = `${upgrade.name} (${upgrade.auto}/s) <br>--${upgrade.cost.toFixed(2)} FAIRY DUST--`;
 
   // check if it can be upgraded again
   if (counter < upgrade.cost) disableButton(upgrade.button);
   displayLevels();
+  position();
 }
 
 function makeUpgrade(
