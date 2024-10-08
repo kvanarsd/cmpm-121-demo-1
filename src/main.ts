@@ -42,17 +42,17 @@ app.appendChild(clicker);
 
 // upgrades
 const mushroomUp = document.createElement("button");
-makeUpgrade(mushroomUp, 10, 0.2, "Mushroom Offering")
+makeUpgrade(mushroomUp, 10, 0.2, "Mushroom Offering");
 
 const featherUp = document.createElement("button");
-makeUpgrade(featherUp, 50, 2, "Feather Tickler")
+makeUpgrade(featherUp, 50, 2, "Feather Tickler");
 
 const pairUp = document.createElement("button");
-makeUpgrade(pairUp, 100, 5, "Pair of Wings")
+makeUpgrade(pairUp, 100, 5, "Pair of Wings");
 
 // Display upgrade levels
 const dispLevel = document.createElement("div");
-displayLevels()
+displayLevels();
 dispLevel.style.position = "absolute";
 app.appendChild(dispLevel);
 position();
@@ -67,7 +67,7 @@ app.appendChild(dispCounter);
 // upgrade levels
 function displayLevels() {
   dispLevel.textContent = "-";
-  for (const upgrade of upgradeButtons) { 
+  for (const upgrade of upgradeButtons) {
     dispLevel.textContent += `- ${upgrade.level} ${upgrade.name} -`;
   }
   dispLevel.textContent += "-";
@@ -106,7 +106,7 @@ function position() {
   mushroomUp.style.left = `${width / 2 - featherUp.offsetWidth / 2 - mushroomUp.offsetWidth}px`;
   featherUp.style.left = `${width / 2 - featherUp.offsetWidth / 2}px`;
   pairUp.style.left = `${width / 2 + featherUp.offsetWidth / 2}px`;
-  
+
   let rect = clicker.getBoundingClientRect();
   mushroomUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
   featherUp.style.top = `${rect.top + clicker.offsetHeight * 2}px`;
@@ -160,12 +160,23 @@ function purchaseUpgrade(upgrade: Upgrades) {
 
   // check if it can be upgraded again
   if (counter < upgrade.cost) disableButton(upgrade.button);
-  displayLevels()
+  displayLevels();
 }
 
-function makeUpgrade(button: HTMLButtonElement, cost: number, auto: number, name: string) {
+function makeUpgrade(
+  button: HTMLButtonElement,
+  cost: number,
+  auto: number,
+  name: string,
+) {
   button.innerHTML = `${name} (${auto}/s) <br>--${cost} FAIRY DUST--`;
-  upgradeButtons.push({ button: button, cost: cost, level: 0, auto: auto, name: name});
+  upgradeButtons.push({
+    button: button,
+    cost: cost,
+    level: 0,
+    auto: auto,
+    name: name,
+  });
   const upgrade = findUpgrade(button);
   if (upgrade) {
     button.addEventListener("click", () => purchaseUpgrade(upgrade));
