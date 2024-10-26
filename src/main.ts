@@ -18,18 +18,6 @@ curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
 curAuto.style.fontWeight = "bold";
 app.append(curAuto);
 
-// Buttons -----------------------------------------------------------------------------------------
-// upgrade buttons
-interface Upgrades {
-  button: HTMLButtonElement;
-  dust: number;
-  level: number;
-  collect: number;
-  name: string;
-}
-
-const upgradeButtons: Upgrades[] = [];
-
 // Fairy Dust Clicker
 const clicker = document.createElement("button");
 clicker.textContent = "🧚🏻";
@@ -43,21 +31,40 @@ const dispCounter = document.createElement("div");
 dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
 app.appendChild(dispCounter);
 
-// upgrades
-const mushroomUp = document.createElement("button");
-makeUpgrade(mushroomUp, 10, 0.2, "Mushroom Offering");
+// upgrade Buttons -----------------------------------------------------------------------------------------
+interface Upgrades {
+  button: HTMLButtonElement;
+  dust: number;
+  level: number;
+  collect: number;
+  name: string;
+}
 
-const featherUp = document.createElement("button");
-makeUpgrade(featherUp, 50, 2, "Feather Tickler");
+const upgradeButtons: Upgrades[] = [];
+let purchaseCost = 5;
+let upgradeRate = 0.5;
+const increaseCost = 1.5;
 
-const pairUp = document.createElement("button");
-makeUpgrade(pairUp, 100, 5, "Extra Pair of Wings");
+// upgrade constructor
+function makeUpgrade(name: string) {
+  const button = document.createElement("button");
+  button.innerHTML = `${name} (${upgradeRate}/s) <br>--${purchaseCost} FAIRY DUST--`;
+  const upgrade = {button: button, dust: purchaseCost, level: 0, collect: upgradeRate, name: name};
+  upgradeButtons.push(upgrade);
+  button.addEventListener("click", () => purchaseUpgrade(upgrade));
 
-const pollenUp = document.createElement("button");
-makeUpgrade(pollenUp, 200, 10, "Pollen to make the Fairies Sneeze");
+  purchaseCost **= 2;
+  upgradeRate *= 3;
+  app.appendChild(button);
+  disableButton(button);
+}
 
-const friendUp = document.createElement("button");
-makeUpgrade(friendUp, 500, 20, "Call a Fairy Friend");
+// make all upgrade buttons
+makeUpgrade("Mushroom Offering");
+makeUpgrade("Feather Tickler");
+makeUpgrade("Extra Pair of Wings");
+makeUpgrade("Pollen for a Fairy Sneeze");
+makeUpgrade("Call a Fairy Friend");
 
 // Display upgrade levels
 const dispLevel = document.createElement("div");
@@ -120,28 +127,10 @@ function disableButton(button: HTMLButtonElement) {
   button.style.cursor = "not-allowed";
 }
 
-// access button from array
-function findUpgrade(button: HTMLButtonElement) {
-  return upgradeButtons.find((upgrade) => upgrade.button === button);
-}
-
-// clicked upgrade
-function purchaseUpgrade(upgrade: Upgrades) {
-  if (counter < upgrade.dust) {
-    return;
-  }
-  addCounter(-upgrade.dust);
+// level up upgrade after purchase
+function levelUpUpgrade(upgrade: Upgrades) {
   upgrade.level++;
-  autoAdd += upgrade.collect;
-  curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
-
-  // if auto collect hasn't started
-  if (!isIntervalRunning) {
-    isIntervalRunning = true;
-    requestAnimationFrame(intervalCounter);
-  }
-
-  upgrade.dust += upgrade.dust * 1.15;
+  upgrade.dust += upgrade.dust * increaseCost;
   upgrade.button.innerHTML = `${upgrade.name} (${upgrade.collect}/s) <br>--${upgrade.dust.toFixed(2)} FAIRY DUST--`;
 
   // check if it can be upgraded again
@@ -149,28 +138,20 @@ function purchaseUpgrade(upgrade: Upgrades) {
   displayLevels();
 }
 
-// make upgrade buttons
-function makeUpgrade(
-  button: HTMLButtonElement,
-  dust: number,
-  collect: number,
-  name: string,
-) {
-  button.innerHTML = `${name} (${collect}/s) <br>--${dust} FAIRY DUST--`;
-  upgradeButtons.push({
-    button: button,
-    dust: dust,
-    level: 0,
-    collect: collect,
-    name: name,
-  });
-  const upgrade = findUpgrade(button);
-  if (upgrade) {
-    button.addEventListener("click", () => purchaseUpgrade(upgrade));
-  } else {
-    console.error("Upgrade not found for the specified button.");
+// clicked upgrade
+function purchaseUpgrade(upgrade: Upgrades) {
+  if (counter < upgrade.dust) {
+    return;
   }
-  app.appendChild(button);
 
-  disableButton(button);
+  addCounter(-upgrade.dust);
+  autoAdd += upgrade.collect;
+  curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
+  levelUpUpgrade(upgrade);
+
+  // if auto collect hasn't started
+  if (!isIntervalRunning) {
+    isIntervalRunning = true;
+    requestAnimationFrame(intervalCounter);
+  }
 }
