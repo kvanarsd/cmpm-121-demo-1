@@ -49,7 +49,13 @@ const increaseCost = 1.5;
 function makeUpgrade(name: string) {
   const button = document.createElement("button");
   button.innerHTML = `${name} (${upgradeRate}/s) <br>--${purchaseCost} FAIRY DUST--`;
-  const upgrade = {button: button, dust: purchaseCost, level: 0, collect: upgradeRate, name: name};
+  const upgrade = {
+    button: button,
+    dust: purchaseCost,
+    level: 0,
+    collect: upgradeRate,
+    name: name,
+  };
   upgradeButtons.push(upgrade);
   button.addEventListener("click", () => purchaseUpgrade(upgrade));
 
