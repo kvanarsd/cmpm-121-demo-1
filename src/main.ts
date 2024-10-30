@@ -1,8 +1,9 @@
 import "./style.css";
 
 const app: HTMLDivElement = document.querySelector("#app")!;
+app.style.backgroundColor = "#ebe4f0";
 
-const gameName = "My Fairy game";
+const gameName = "Collect Fairy Dust!";
 document.title = gameName;
 
 const header = document.createElement("h1");
@@ -15,7 +16,7 @@ let isIntervalRunning = false;
 
 const curAuto = document.createElement("div");
 curAuto.innerHTML = `${autoAdd.toFixed(2)} Fairy Dust/sec`;
-curAuto.style.fontWeight = "bold";
+//curAuto.style.fontWeight = "bold";
 app.append(curAuto);
 
 // Buttons -----------------------------------------------------------------------------------------
@@ -36,11 +37,29 @@ clicker.textContent = "🧚🏻";
 let counter = 0;
 clicker.addEventListener("click", () => addCounter(1));
 
+// change style referencing lorclau's code https://github.com/lorclau/cmpm-121-demo-1/blob/main/src/main.ts
+clicker.style.cssText = `
+position: absolute;
+  top: 20%; 
+  left: 50%;
+  background: #fff;
+  transform: translate(-50%, -50%) scale(2);
+  width: 100px; 
+  height: 100px;
+  border-radius: 50px; 
+  font-size: 40px; 
+  display: flex;        
+  justify-content: center;   
+`
+
 app.appendChild(clicker);
 
 // Display counter
 const dispCounter = document.createElement("div");
 dispCounter.textContent = counter.toFixed(2) + " Fairy Dust";
+dispCounter.style.fontWeight = "bold";
+dispCounter.style.fontSize = "25px";
+dispCounter.style.color = "#bb5ccc";
 app.appendChild(dispCounter);
 
 // upgrades
@@ -108,15 +127,15 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
 
 // change button colors
 function enableButton(button: HTMLButtonElement) {
-  button.style.backgroundColor = "#f9f9f9";
+  button.style.backgroundColor = "#fae3f7";
   button.style.color = "#1a1a1a";
   button.style.cursor = "pointer";
 }
 
 // change button colors
 function disableButton(button: HTMLButtonElement) {
-  button.style.backgroundColor = "#d3d3d3";
-  button.style.color = "#a9a9a9";
+  button.style.backgroundColor = "#927b9e";
+  button.style.color = "#5e5066";
   button.style.cursor = "not-allowed";
 }
 
