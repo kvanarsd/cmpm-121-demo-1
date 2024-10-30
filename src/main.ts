@@ -140,7 +140,7 @@ function intervalCounter(timestamp: DOMHighResTimeStamp) {
 
 // change button colors
 function enableButton(button: HTMLButtonElement) {
-  button.style.backgroundColor = "#fae3f7";
+  button.style.backgroundColor = "#faa7e8";
   button.style.color = "#1a1a1a";
   button.style.cursor = "pointer";
 }
